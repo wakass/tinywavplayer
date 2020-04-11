@@ -79,17 +79,18 @@ ISR (TIMER0_COMPA_vect) {
   int byte_p = p/8;
  
   if (inbyte_p == 0 ) {
-        current_byte = pgm_read_byte(&bmo_sound_pdm[byte_p]);
+        current_byte = pgm_read_byte(&sound_progmem_pdm[byte_p]);
       }
   float x = getBit(inbyte_p,current_byte);
     
   p++;
+  //Low-pass filter
   y = (0.875)*y + x/8.0;
   int sample = (int)( y * 100.0);
   
   OCR1A = sample; OCR1B = sample ^ 255;
   
-  if (p == bmo_sound_pdm_len*8) {
+  if (p == sound_progmem_pdm_len*8) {
     // p=0; 
    TIMSK = 0;
    adc_disable();
